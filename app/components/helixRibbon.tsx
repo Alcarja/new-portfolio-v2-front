@@ -37,10 +37,22 @@ function SubtlePopCard({
   const [hovered, setHover] = useState(false);
   const groupRef = useRef<THREE.Group>(null!);
 
-  const loadedTexture = useTexture(project?.imageUrl) as THREE.Texture;
+  // Proxy remote images through API route to avoid CORS
+  const textureUrl = useMemo(() => {
+    const url = project?.imageUrl;
+    if (!url) return "/Abisko-1.jpg";
+    if (url.startsWith("/")) return url;
+    return `/api/proxy-image?url=${encodeURIComponent(url)}`;
+  }, [project?.imageUrl]);
+
+  const loadedTexture = useTexture(textureUrl) as THREE.Texture;
   const texture = useMemo(() => {
     const t = loadedTexture.clone();
     t.colorSpace = THREE.SRGBColorSpace;
+    t.minFilter = THREE.LinearMipmapLinearFilter;
+    t.magFilter = THREE.LinearFilter;
+    t.anisotropy = 16;
+    t.generateMipmaps = true;
     t.needsUpdate = true;
     return t;
   }, [loadedTexture]);
@@ -111,10 +123,10 @@ function HelixScene({
   const groupRef = useRef<THREE.Group>(null!);
   const scroll = useScroll();
 
-  const radius = 6.0;
-  const imgW = 2.2;
-  const imgH = 3.5;
-  const pitch = 3.8;
+  const radius = 4.5;
+  const imgW = 2.6;
+  const imgH = 1.6;
+  const pitch = 2.4;
   const yStepPerRad = pitch / (Math.PI * 2);
   const angleStep = imgW / radius;
   const yStepPerImage = angleStep * yStepPerRad;
@@ -221,6 +233,7 @@ export default function HelixRibbon() {
 
       <Canvas
         camera={{ position: [0, 0, 28], fov: 22 }}
+        dpr={[1, 2]}
         gl={{ antialias: true, logarithmicDepthBuffer: true }}
       >
         <ambientLight intensity={ambientIntensity} />

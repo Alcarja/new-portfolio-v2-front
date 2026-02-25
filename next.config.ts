@@ -12,5 +12,13 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/uploads/:path*",
+        destination: "http://116.203.109.157/uploads/:path*",
+      },
+    ];
+  },
 };
 export default nextConfig;

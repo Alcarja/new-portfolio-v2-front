@@ -62,7 +62,7 @@ export default function Navbar({
               <button
                 key={t}
                 onClick={() => setTheme(t)}
-                className="px-2 py-1 text-[9px] font-bold uppercase tracking-widest transition-all duration-300 cursor-pointer"
+                className="px-2 py-1 text-[9px] font-bold uppercase tracking-widest cursor-pointer transition-[border,border-radius] duration-300"
                 style={{
                   border: `var(--theme-border-width) var(--theme-border-style) var(--theme-border-color)`,
                   borderRadius: "var(--theme-border-radius)",
@@ -81,31 +81,15 @@ export default function Navbar({
             ))}
           </div>
 
-          {isHome && mode === "regular" && (
-            <>
-              <a
-                href="#projects"
-                className="text-[10px] font-bold uppercase tracking-widest transition-all"
-                style={{ color: "var(--theme-text-primary)" }}
-              >
-                Projects
-              </a>
-              <a
-                href="#about"
-                className="text-[10px] font-bold uppercase tracking-widest transition-all"
-                style={{ color: "var(--theme-text-primary)" }}
-              >
-                About
-              </a>
-              <a
-                href="#contact"
-                className="text-[10px] font-bold uppercase tracking-widest transition-all"
-                style={{ color: "var(--theme-text-primary)" }}
-              >
-                Contact
-              </a>
-            </>
-          )}
+          <>
+            <a
+              href="/contact"
+              className="text-[10px] font-bold uppercase tracking-widest transition-all"
+              style={{ color: "var(--theme-text-primary)" }}
+            >
+              Contact
+            </a>
+          </>
 
           {isHome && (
             <button

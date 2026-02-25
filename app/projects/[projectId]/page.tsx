@@ -124,13 +124,14 @@ const ProjectPage = ({
                   key={i}
                   className="flex items-center gap-2 border border-[var(--theme-border-color)] px-3 py-2"
                 >
-                  <Image
-                    src={tech}
-                    alt="tech"
-                    width={20}
-                    height={20}
-                    className="invert brightness-200"
-                  />
+                  <div className="relative w-5 h-5">
+                    <Image
+                      src={tech}
+                      alt="tech"
+                      fill
+                      className="object-contain invert brightness-200"
+                    />
+                  </div>
                   <span className="text-[10px]">DEP_0{i}</span>
                 </div>
               ))}
@@ -183,9 +184,16 @@ const ProjectPage = ({
                 {project?.technology?.map((tech: string, i: number) => (
                   <div
                     key={i}
-                    className="bg-white p-3 border-4 border-black shadow-[4px_4px_0px_#000]"
+                    className="bg-white border-4 border-black shadow-[4px_4px_0px_#000]"
                   >
-                    <Image src={tech} alt="tech icon" width={40} height={40} />
+                    <div className="relative w-12 h-12">
+                      <Image
+                        src={tech}
+                        alt="tech icon"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -231,9 +239,16 @@ const ProjectPage = ({
               {project?.technology?.map((tech: string, i: number) => (
                 <div
                   key={i}
-                  className="w-12 h-12 rounded-full bg-[var(--theme-bg-secondary)] flex items-center justify-center border border-[var(--theme-border-color)]"
+                  className="relative w-12 h-12 rounded-full bg-[var(--theme-bg-secondary)] flex items-center justify-center border border-[var(--theme-border-color)]"
                 >
-                  <Image src={tech} alt="tech" width={24} height={24} />
+                  <div className="relative w-12 h-12">
+                    <Image
+                      src={tech}
+                      alt="tech icon"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
                 </div>
               ))}
             </div>
