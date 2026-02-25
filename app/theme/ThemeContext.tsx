@@ -63,40 +63,37 @@ const CSS_VAR_MAP: Record<keyof ThemeCss, string> = {
   navbarBlur: "--theme-navbar-blur",
 };
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // 1. Lazy Initialization: This runs ONLY on the very first mount
-  const [themeName, setThemeName] = useState<ThemeName>(() => {
-    // Check if we are in a browser environment (Next.js check)
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem(
-        "portfolio-theme",
-      ) as ThemeName | null;
-      return stored && themes[stored] ? stored : "brutalist";
-    }
-    return "brutalist";
+function getStoredTheme(): ThemeName {
+  if (typeof window === "undefined") return "brutalist";
+  const stored = localStorage.getItem("portfolio-theme") as ThemeName | null;
+  return stored && themes[stored] ? stored : "brutalist";
+}
+
+/** Apply CSS variables synchronously (called during init and on change) */
+function applyCssVars(name: ThemeName) {
+  const root = document.documentElement;
+  const css = themes[name].css;
+  Object.entries(CSS_VAR_MAP).forEach(([key, varName]) => {
+    root.style.setProperty(varName, css[key as keyof ThemeCss]);
   });
+  root.setAttribute("data-theme", name);
+}
+
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [themeName, setThemeName] = useState<ThemeName>(getStoredTheme);
 
   const setTheme = useCallback((name: ThemeName) => {
     setThemeName(name);
     localStorage.setItem("portfolio-theme", name);
+    applyCssVars(name);
   }, []);
 
   const theme = themes[themeName];
 
-  // 2. Sync CSS variables to the DOM
+  // Apply CSS variables on mount and when theme changes externally
   useEffect(() => {
-    const root = document.documentElement;
-    const css = theme.css;
-
-    // Using Object.entries is often cleaner for iterating maps
-    Object.entries(CSS_VAR_MAP).forEach(([key, varName]) => {
-      const value = css[key as keyof ThemeCss];
-      root.style.setProperty(varName, value);
-    });
-
-    // Optional: add a class to the body for theme-specific global overrides
-    root.setAttribute("data-theme", themeName);
-  }, [theme, themeName]);
+    applyCssVars(themeName);
+  }, [themeName]);
 
   return (
     <ThemeContext.Provider value={{ themeName, theme, setTheme }}>
