@@ -38,7 +38,7 @@ export default function RegularPortfolio({
       <section className="max-w-[1400px] mx-auto px-6 py-24 relative z-10">
         <header className="mb-20">
           <h2
-            className="text-6xl md:text-9xl tracking-tighter"
+            className="text-4xl md:text-9xl tracking-tighter"
             style={{
               color: "var(--theme-text-primary)",
               fontWeight: "var(--theme-heading-weight)",

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
 import { useTheme } from "../../theme/ThemeContext";
 import { themes, type ThemeName } from "../../theme/themes";
 
@@ -16,6 +17,20 @@ export default function Navbar({
   const isHome = pathname === "/";
   const { themeName, setTheme } = useTheme();
   const themeNames = Object.keys(themes) as ThemeName[];
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when tapping outside
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [menuOpen]);
 
   return (
     <nav
@@ -27,10 +42,11 @@ export default function Navbar({
         fontFamily: "var(--theme-font-family)",
       }}
     >
-      <div className="max-w-400 mx-auto px-4 py-2 flex justify-between items-center">
-        <Link href="/">
+      <div className="max-w-400 mx-auto px-3 md:px-4 py-2 flex justify-between items-center gap-2">
+        {/* Logo */}
+        <Link href="/" className="shrink-0">
           <div
-            className="p-2 transition-all duration-300"
+            className="p-1.5 md:p-2 transition-all duration-300"
             style={{
               backgroundColor: "var(--theme-bg-secondary)",
               border: `var(--theme-border-width) var(--theme-border-style) var(--theme-border-color)`,
@@ -39,7 +55,7 @@ export default function Navbar({
             }}
           >
             <h1
-              className="text-sm leading-none"
+              className="text-xs md:text-sm leading-none whitespace-nowrap"
               style={{
                 color: "var(--theme-text-primary)",
                 textTransform:
@@ -55,9 +71,10 @@ export default function Navbar({
           </div>
         </Link>
 
-        <div className="flex items-center gap-4">
-          {/* Theme switcher */}
-          <div className="flex items-center gap-1">
+        {/* Right side controls */}
+        <div className="flex items-center gap-1.5 md:gap-3">
+          {/* Theme switcher — desktop: inline buttons */}
+          <div className="hidden md:flex items-center gap-1">
             {themeNames.map((t) => (
               <button
                 key={t}
@@ -81,20 +98,72 @@ export default function Navbar({
             ))}
           </div>
 
-          <>
-            <a
-              href="/contact"
-              className="text-[10px] font-bold uppercase tracking-widest transition-all"
-              style={{ color: "var(--theme-text-primary)" }}
+          {/* Theme switcher — mobile: dropdown */}
+          <div className="relative md:hidden" ref={menuRef}>
+            <button
+              onClick={() => setMenuOpen((prev) => !prev)}
+              className="px-2 py-1 text-[9px] font-bold uppercase tracking-widest cursor-pointer"
+              style={{
+                border: `var(--theme-border-width) var(--theme-border-style) var(--theme-border-color)`,
+                borderRadius: "var(--theme-border-radius)",
+                backgroundColor: "var(--theme-accent)",
+                color: "var(--theme-text-on-accent)",
+              }}
             >
-              Contact
-            </a>
-          </>
+              {themes[themeName].label} ▾
+            </button>
 
+            {menuOpen && (
+              <div
+                className="absolute right-0 top-full mt-2 flex flex-col gap-1 p-2 z-50 min-w-28"
+                style={{
+                  backgroundColor: "var(--theme-bg-secondary)",
+                  border: `var(--theme-border-width) var(--theme-border-style) var(--theme-border-color)`,
+                  borderRadius: "var(--theme-border-radius)",
+                  boxShadow: "var(--theme-shadow-primary)",
+                }}
+              >
+                {themeNames.map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => {
+                      setTheme(t);
+                      setMenuOpen(false);
+                    }}
+                    className="px-3 py-2 text-[10px] font-bold uppercase tracking-widest cursor-pointer text-left"
+                    style={{
+                      borderRadius: "var(--theme-border-radius)",
+                      backgroundColor:
+                        themeName === t
+                          ? "var(--theme-accent)"
+                          : "transparent",
+                      color:
+                        themeName === t
+                          ? "var(--theme-text-on-accent)"
+                          : "var(--theme-text-primary)",
+                    }}
+                  >
+                    {themes[t].label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Contact — always visible */}
+          <a
+            href="/contact"
+            className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest transition-all"
+            style={{ color: "var(--theme-text-primary)" }}
+          >
+            Contact
+          </a>
+
+          {/* Mode toggle (home only) */}
           {isHome && (
             <button
               onClick={onToggle}
-              className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest transition-all duration-300 cursor-pointer"
+              className="px-2 py-1.5 md:px-4 md:py-2 text-[9px] md:text-[10px] font-bold uppercase tracking-widest transition-all duration-300 cursor-pointer whitespace-nowrap"
               style={{
                 backgroundColor: "var(--theme-accent)",
                 color: "var(--theme-text-on-accent)",
@@ -102,16 +171,22 @@ export default function Navbar({
                 borderRadius: "var(--theme-border-radius)",
               }}
             >
-              {mode === "carousel"
-                ? "Browse Projects \u2192"
-                : "View Carousel \u2190"}
+              <span className="hidden sm:inline">
+                {mode === "carousel"
+                  ? "Browse Projects \u2192"
+                  : "View Carousel \u2190"}
+              </span>
+              <span className="sm:hidden">
+                {mode === "carousel" ? "Projects" : "Carousel"}
+              </span>
             </button>
           )}
 
+          {/* Back button (non-home pages) */}
           {!isHome && (
             <Link
               href="/"
-              className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest transition-all duration-300"
+              className="px-2 py-1.5 md:px-4 md:py-2 text-[9px] md:text-[10px] font-bold uppercase tracking-widest transition-all duration-300"
               style={{
                 backgroundColor: "var(--theme-bg-secondary)",
                 border: `var(--theme-border-width) var(--theme-border-style) var(--theme-border-color)`,
