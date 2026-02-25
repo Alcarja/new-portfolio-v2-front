@@ -152,7 +152,7 @@ const ProjectPage = ({
         <div className="max-w-[1400px] mx-auto px-6 py-24">
           <header className="mb-12 relative">
             <h1
-              className="text-7xl md:text-[10rem] lg:text-[12rem] leading-[0.8] mb-8"
+              className="text-6xl md:text-[8rem] lg:text-[8rem] leading-[0.8] mb-8"
               style={{
                 color: "var(--theme-text-primary)",
                 fontFamily: "var(--theme-heading-font-family)",
