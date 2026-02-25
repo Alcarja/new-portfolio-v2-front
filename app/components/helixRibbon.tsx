@@ -3,16 +3,10 @@
 import * as THREE from "three";
 import { useRef, useMemo, useState, useEffect, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import {
-  ScrollControls,
-  useScroll,
-  Html,
-  useTexture,
-} from "@react-three/drei";
+import { ScrollControls, useScroll, Html, useTexture } from "@react-three/drei";
 import { useRouter } from "next/navigation";
 import { useGetAllProjects } from "../adapters/hooks";
 import { useTheme } from "../theme/ThemeContext";
-import type { ThemeThree } from "../theme/themes";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Project = Record<string, any>;
@@ -28,8 +22,6 @@ function SubtlePopCard({
   height,
   yStepPerRad,
   strokeColor,
-  strokeScale,
-  strokeOffset,
   onClick,
 }: {
   project: Project;
@@ -40,14 +32,12 @@ function SubtlePopCard({
   height: number;
   yStepPerRad: number;
   strokeColor: string;
-  strokeScale: number;
-  strokeOffset: number;
   onClick: () => void;
 }) {
   const [hovered, setHover] = useState(false);
   const groupRef = useRef<THREE.Group>(null!);
 
-  const loadedTexture = useTexture("/Abisko-1.jpg") as THREE.Texture;
+  const loadedTexture = useTexture(project?.imageUrl) as THREE.Texture;
   const texture = useMemo(() => {
     const t = loadedTexture.clone();
     t.colorSpace = THREE.SRGBColorSpace;
@@ -89,8 +79,8 @@ function SubtlePopCard({
         {/* STROKE */}
         <mesh
           geometry={geometry}
-          position={[0, 0, strokeOffset]}
-          scale={[strokeScale, strokeScale, 1]}
+          position={[0, 0, -0.02]}
+          scale={[1.015, 1.015, 1]}
         >
           <meshBasicMaterial color={strokeColor} side={THREE.DoubleSide} />
         </mesh>
@@ -112,10 +102,10 @@ function SubtlePopCard({
 
 function HelixScene({
   projects,
-  threeTheme,
+  strokeColor,
 }: {
   projects: Project[];
-  threeTheme: ThemeThree;
+  strokeColor: string;
 }) {
   const router = useRouter();
   const groupRef = useRef<THREE.Group>(null!);
@@ -149,9 +139,7 @@ function HelixScene({
           width={imgW}
           height={imgH}
           yStepPerRad={yStepPerRad}
-          strokeColor={threeTheme.meshStrokeColor}
-          strokeScale={threeTheme.strokeScale}
-          strokeOffset={threeTheme.strokeOffset}
+          strokeColor={strokeColor}
           startAngle={-i * angleStep}
           yPos={-i * yStepPerImage}
           onClick={() => router.push(`/projects/${project.id}`)}
@@ -186,7 +174,8 @@ function ThemedFog({
 export default function HelixRibbon() {
   const { data: projectsData, isLoading } = useGetAllProjects();
   const { theme } = useTheme();
-  const threeTheme = theme.three;
+  const { fogColor, meshStrokeColor, ambientIntensity, fogNear, fogFar } =
+    theme.three;
 
   const projects: Project[] = useMemo(() => {
     if (!projectsData) return [];
@@ -195,48 +184,38 @@ export default function HelixRibbon() {
 
   return (
     <div
-      className="h-screen w-full overflow-hidden transition-colors duration-400"
-      style={{
-        backgroundColor: "var(--theme-bg-primary)",
-        fontFamily: "var(--theme-font-family)",
-      }}
+      className="h-screen w-full overflow-hidden font-sans"
+      style={{ backgroundColor: "var(--theme-bg-primary)" }}
     >
       {/* Bottom overlay hints */}
       <div className="fixed inset-0 pointer-events-none z-10 p-10 flex flex-col justify-end">
         <div className="flex justify-between items-end">
           <div
-            className="pb-1 text-sm"
+            className="font-black pb-1 text-sm tracking-tighter"
             style={{
               color: "var(--theme-text-primary)",
-              borderBottom: `var(--theme-border-width) var(--theme-border-style) var(--theme-border-color)`,
+              borderBottom: `4px solid var(--theme-border-color)`,
               textTransform:
                 "var(--theme-heading-transform)" as React.CSSProperties["textTransform"],
-              fontWeight: "var(--theme-heading-weight)",
-              fontStyle: "var(--theme-heading-style)",
-              fontFamily: "var(--theme-heading-font-family)",
-              letterSpacing: "var(--theme-letter-spacing)",
             }}
           >
             Scroll_Explore
           </div>
           <div
-            className="text-[10px] uppercase tracking-widest text-right leading-tight opacity-70"
-            style={{
-              color: "var(--theme-text-primary)",
-              fontFamily: "var(--theme-font-family)",
-            }}
+            className="font-bold text-[10px] uppercase tracking-widest text-right leading-tight opacity-70"
+            style={{ color: "var(--theme-text-primary)" }}
           >
             Selected Works <br /> 24 — 26
           </div>
         </div>
       </div>
 
-      {/* Background pattern */}
+      {/* Dot grid background */}
       <div
-        className="fixed inset-0 pointer-events-none z-1 transition-all duration-400"
+        className="fixed inset-0 pointer-events-none z-1"
         style={{
-          backgroundImage: "var(--theme-bg-pattern)",
-          backgroundSize: "var(--theme-bg-pattern-size)",
+          backgroundImage: `radial-gradient(circle, var(--theme-dot-color) 1px, transparent 1px)`,
+          backgroundSize: `var(--theme-dot-size) var(--theme-dot-size)`,
         }}
       />
 
@@ -244,29 +223,14 @@ export default function HelixRibbon() {
         camera={{ position: [0, 0, 28], fov: 22 }}
         gl={{ antialias: true, logarithmicDepthBuffer: true }}
       >
-        <ambientLight intensity={threeTheme.ambientIntensity} />
-        {threeTheme.pointLightIntensity > 0 && (
-          <pointLight
-            color={threeTheme.pointLightColor}
-            intensity={threeTheme.pointLightIntensity}
-            position={[0, 5, 10]}
-          />
-        )}
-        <ThemedFog
-          color={threeTheme.fogColor}
-          near={threeTheme.fogNear}
-          far={threeTheme.fogFar}
-        />
+        <ambientLight intensity={ambientIntensity} />
+        <ThemedFog color={fogColor} near={fogNear} far={fogFar} />
         <Suspense
           fallback={
             <Html
               center
-              className="text-xl tracking-tighter"
-              style={{
-                color: "var(--theme-text-primary)",
-                fontWeight: "var(--theme-heading-weight)",
-                fontFamily: "var(--theme-heading-font-family)",
-              }}
+              className="font-black text-xl uppercase tracking-tighter"
+              style={{ color: "var(--theme-text-primary)" }}
             >
               Loading Portfolio...
             </Html>
@@ -275,16 +239,12 @@ export default function HelixRibbon() {
           <ScrollControls pages={6} damping={0.4}>
             <group position={[0, 1.8, 0]}>
               {projects.length > 0 ? (
-                <HelixScene projects={projects} threeTheme={threeTheme} />
+                <HelixScene projects={projects} strokeColor={meshStrokeColor} />
               ) : (
                 <Html
                   center
-                  className="text-xl tracking-tighter"
-                  style={{
-                    color: "var(--theme-text-primary)",
-                    fontWeight: "var(--theme-heading-weight)",
-                    fontFamily: "var(--theme-heading-font-family)",
-                  }}
+                  className="font-black text-xl uppercase tracking-tighter"
+                  style={{ color: "var(--theme-text-primary)" }}
                 >
                   {isLoading ? "Loading..." : "No projects found"}
                 </Html>
