@@ -37,11 +37,16 @@ function SubtlePopCard({
   const [hovered, setHover] = useState(false);
   const groupRef = useRef<THREE.Group>(null!);
 
-  // Proxy remote images through API route to avoid CORS
+  // Proxy remote images through API route to avoid CORS (only when cross-origin)
   const textureUrl = useMemo(() => {
     const url = project?.imageUrl;
     if (!url) return "/Abisko-1.jpg";
     if (url.startsWith("/")) return url;
+    try {
+      const imgHost = new URL(url).hostname;
+      const currentHost = typeof window !== "undefined" ? window.location.hostname : "";
+      if (imgHost === currentHost) return url;
+    } catch {}
     return `/api/proxy-image?url=${encodeURIComponent(url)}`;
   }, [project?.imageUrl]);
 
