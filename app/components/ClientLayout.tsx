@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState } from "react";
+import { ThemeProvider } from "../theme/ThemeContext";
 import Navbar from "./layout/Navbar";
 import Footer from "./layout/Footer";
 
@@ -29,10 +30,12 @@ export default function ClientLayout({
     setMode((prev) => (prev === "carousel" ? "regular" : "carousel"));
 
   return (
-    <ModeContext.Provider value={{ mode, toggle }}>
-      <Navbar mode={mode} onToggle={toggle} />
-      <main>{children}</main>
-      <Footer />
-    </ModeContext.Provider>
+    <ThemeProvider>
+      <ModeContext.Provider value={{ mode, toggle }}>
+        <Navbar mode={mode} onToggle={toggle} />
+        <main>{children}</main>
+        <Footer />
+      </ModeContext.Provider>
+    </ThemeProvider>
   );
 }

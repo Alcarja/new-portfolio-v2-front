@@ -6,13 +6,70 @@
   --animate-marquee: marquee 40s linear infinite;
 }
 
+/* ── Default theme variables (brutalist) ─────────── */
+:root {
+  /* Colors */
+  --theme-bg-primary: #f3f3f3;
+  --theme-bg-secondary: #ffffff;
+  --theme-bg-footer: #000000;
+  --theme-bg-navbar: #f3f3f3;
+  --theme-text-primary: #000000;
+  --theme-text-secondary: rgba(0, 0, 0, 0.5);
+  --theme-text-on-accent: #ffffff;
+  --theme-border-color: #000000;
+  --theme-accent: #ff3e00;
+  --theme-selection-bg: rgba(0, 0, 0, 0.1);
+  --theme-selection-text: #000000;
+
+  /* Typography */
+  --theme-font-family: var(--font-geist-sans), sans-serif;
+  --theme-heading-font-family: var(--font-geist-sans), sans-serif;
+  --theme-heading-transform: uppercase;
+  --theme-heading-weight: 900;
+  --theme-heading-style: normal;
+  --theme-letter-spacing: -0.05em;
+
+  /* Borders */
+  --theme-border-width: 3px;
+  --theme-border-style: solid;
+  --theme-border-radius: 0px;
+
+  /* Shadows */
+  --theme-shadow-primary: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+  --theme-shadow-accent: 6px 6px 0px 0px #ff3e00;
+
+  /* Background pattern */
+  --theme-bg-pattern: radial-gradient(
+    circle,
+    rgba(0, 0, 0, 0.1) 1px,
+    transparent 1px
+  );
+  --theme-bg-pattern-size: 24px 24px;
+
+  /* Noise */
+  --theme-noise-opacity: 0.025;
+
+  /* Hover */
+  --theme-hover-transform: translate(6px, 6px);
+  --theme-hover-shadow: none;
+
+  /* Cards */
+  --theme-card-rotation: rotate(0deg);
+  --theme-card-hover-rotation: rotate(0deg);
+
+  /* Navbar */
+  --theme-navbar-blur: blur(8px);
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  background: #fafafa;
-  color: #171717;
+  background: var(--theme-bg-primary);
+  color: var(--theme-text-primary);
+  font-family: var(--theme-font-family);
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 /* ── Noise grain overlay ───────────────────────────── */
@@ -22,10 +79,11 @@ body::before {
   inset: 0;
   z-index: 9999;
   pointer-events: none;
-  opacity: 0.025;
+  opacity: var(--theme-noise-opacity);
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 256px 256px;
+  transition: opacity 0.4s ease;
 }
 
 /* ── Marquee animation ─────────────────────────────── */
@@ -40,6 +98,6 @@ body::before {
 
 /* ── Selection color ───────────────────────────────── */
 ::selection {
-  background: rgba(0, 0, 0, 0.1);
-  color: #000;
+  background: var(--theme-selection-bg);
+  color: var(--theme-selection-text);
 }

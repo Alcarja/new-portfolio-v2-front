@@ -4,9 +4,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import HelixRibbon from "./components/helixRibbon";
 import RegularPortfolio from "./components/RegularPortfolio";
 import { useMode } from "./components/ClientLayout";
+import { useTheme } from "./theme/ThemeContext";
 
 export default function Home() {
   const { mode } = useMode();
+  const { themeName } = useTheme();
 
   return (
     <AnimatePresence mode="wait">
@@ -28,7 +30,7 @@ export default function Home() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <RegularPortfolio />
+          <RegularPortfolio activeTheme={themeName} />
         </motion.div>
       )}
     </AnimatePresence>
