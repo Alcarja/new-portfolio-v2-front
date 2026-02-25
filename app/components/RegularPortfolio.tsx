@@ -191,7 +191,7 @@ function ProjectCard({
         >
           <div className="relative aspect-square border-2 border-black overflow-hidden mb-4">
             <Image
-              src="/Abisko-1.jpg"
+              src={project.imageUrl}
               alt={project.name}
               fill
               className="object-cover"
