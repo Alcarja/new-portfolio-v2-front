@@ -118,7 +118,7 @@ function ProjectCard({
           {/* 2. Minified Image Preview (The "Buffer" preview) */}
           <div className="relative w-24 h-14 overflow-hidden border border-[var(--theme-border-color)] hidden sm:block">
             <Image
-              src="/Abisko-1.jpg"
+              src={project.imageUrl || "/Abisko-1.jpg"}
               alt={project.name}
               fill
               className="object-cover grayscale sepia hue-rotate-[100deg] brightness-50 group-hover:grayscale-0 group-hover:hue-rotate-0 group-hover:brightness-100 transition-all duration-500"
@@ -191,7 +191,7 @@ function ProjectCard({
         >
           <div className="relative aspect-square border-2 border-black overflow-hidden mb-4">
             <Image
-              src={project.imageUrl}
+              src={project.imageUrl || "/Abisko-1.jpg"}
               alt={project.name}
               fill
               className="object-cover"
