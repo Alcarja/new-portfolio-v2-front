@@ -72,66 +72,65 @@ export interface ThemeDefinition {
 export const themes: Record<ThemeName, ThemeDefinition> = {
   regular: {
     name: "regular",
-    label: "Modern",
+    label: "Minimal",
     css: {
-      // Colors — Clean grays and "Link" blues
+      // Colors — White canvas, deep navy, cool grays
       bgPrimary: "#FFFFFF",
-      bgSecondary: "#F9FAFB",
-      bgFooter: "#111827",
-      bgNavbar: "rgba(255, 255, 255, 0.7)",
-      textPrimary: "#111827",
-      textSecondary: "#6B7280",
+      bgSecondary: "#F7F8FA",
+      bgFooter: "#0A1628",
+      bgNavbar: "rgba(255, 255, 255, 0.9)",
+      textPrimary: "#0A1628",
+      textSecondary: "#7A8599",
       textOnAccent: "#FFFFFF",
-      borderColor: "#E5E7EB",
-      accent: "#3B82F6",
-      selectionBg: "#DBEAFE",
-      selectionText: "#1E40AF",
+      borderColor: "#E2E6ED",
+      accent: "#1B3A6B",
+      selectionBg: "#1B3A6B",
+      selectionText: "#FFFFFF",
 
-      // Typography — Clean, readable
+      // Typography — Soft sans, relaxed, sentence-case
       fontFamily: "var(--font-geist-sans), -apple-system, sans-serif",
       headingFontFamily: "var(--font-geist-sans), -apple-system, sans-serif",
       headingTransform: "none",
-      headingWeight: "600",
+      headingWeight: "500",
       headingStyle: "normal",
       letterSpacing: "-0.02em",
 
-      // Borders — Subtle and soft
+      // Borders — Soft, rounded
       borderWidth: "1px",
       borderStyle: "solid",
-      borderRadius: "8px",
+      borderRadius: "16px",
 
-      // Shadows — Multi-layered soft shadows
-      shadowPrimary:
-        "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-      shadowAccent: "0 10px 15px -3px rgba(59, 130, 246, 0.2)",
+      // Shadows — None
+      shadowPrimary: "none",
+      shadowAccent: "none",
 
-      // Background — Clean
+      // Background — Clean white
       bgPattern: "none",
       bgPatternSize: "0px 0px",
 
-      // Noise — Invisible
+      // Noise — Off
       noiseOpacity: "0",
 
-      // Hover — Slight lift
-      hoverTransform: "translateY(-2px)",
-      hoverShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+      // Hover — None
+      hoverTransform: "none",
+      hoverShadow: "none",
 
       // Cards — Stable
       cardRotation: "rotate(0deg)",
       cardHoverRotation: "rotate(0deg)",
 
       // Navbar
-      navbarBlur: "blur(10px)",
+      navbarBlur: "blur(12px)",
     },
     three: {
       fogColor: "#FFFFFF",
-      meshStrokeColor: "#E5E7EB",
+      meshStrokeColor: "#E2E6ED",
       ambientIntensity: 1.0,
       fogNear: 30,
       fogFar: 70,
       strokeScale: 1.001,
       strokeOffset: 0,
-      pointLightColor: "#3B82F6",
+      pointLightColor: "#1B3A6B",
       pointLightIntensity: 0.4,
     },
   },

@@ -35,38 +35,43 @@ export default function RegularPortfolio({
         }}
       />
 
-      <section className="max-w-[1400px] mx-auto px-6 py-24 relative z-10">
-        <header className="mb-20">
+      <section className="max-w-7xl mx-auto px-6 md:px-12 pt-32 pb-24 relative z-10">
+        <header className="mb-16">
           <h2
-            className="text-4xl md:text-9xl tracking-tighter"
+            className="text-3xl md:text-5xl tracking-tight leading-none"
             style={{
               color: "var(--theme-text-primary)",
               fontWeight: "var(--theme-heading-weight)",
               fontFamily: "var(--theme-heading-font-family)",
+              fontStyle: "var(--theme-heading-style)",
               textTransform: "var(--theme-heading-transform)" as any,
             }}
           >
-            {isCodeMode ? "SRC/PROJECTS/" : "Works"}
+            {isCodeMode ? "SRC/PROJECTS/" : "Projects"}
           </h2>
+          {!isCodeMode && (
+            <p
+              className="text-sm mt-3"
+              style={{ color: "var(--theme-text-secondary)" }}
+            >
+              A selection of recent work
+            </p>
+          )}
         </header>
 
         {isLoading ? (
           <div
-            className="text-center py-20"
-            style={{ color: "var(--theme-text-primary)" }}
+            className="text-center py-20 text-sm"
+            style={{ color: "var(--theme-text-secondary)" }}
           >
             {isCodeMode ? "INITIALIZING_SYSTEM_SCAN..." : "Loading..."}
           </div>
         ) : (
-          /* FIX: Conditional Layout 
-             If code mode: use a vertical stack (flex-col) 
-             Otherwise: use the 3-column grid
-          */
           <div
             className={
               isCodeMode
-                ? "flex flex-col border-t border-[var(--theme-border-color)]"
-                : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"
+                ? "flex flex-col border-t border-(--theme-border-color)"
+                : "grid grid-cols-1 md:grid-cols-2 gap-6"
             }
           >
             {projects.map((project: any, i: number) => (
@@ -116,7 +121,7 @@ function ProjectCard({
           </div>
 
           {/* 2. Minified Image Preview (The "Buffer" preview) */}
-          <div className="relative w-24 h-14 overflow-hidden border border-[var(--theme-border-color)] hidden sm:block">
+          <div className="relative w-24 h-14 overflow-hidden border border-(--theme-border-color) hidden sm:block">
             <Image
               src={project.imageUrl || "/Abisko-1.jpg"}
               alt={project.name}
@@ -223,91 +228,74 @@ function ProjectCard({
     );
   }
 
-  // 3. REGULAR / MODERN STYLE: The standard "Clean" layout
+  // 3. MINIMAL / MODERN STYLE — rounded cards
   return (
     <Link href={`/projects/${project.id}`} className="block w-full">
-      <motion.div
-        whileHover={{ x: 8 }} // Slide right instead of up for a "List" feel
-        className="group relative flex items-center gap-4 p-3 transition-all duration-300"
-        style={{
-          backgroundColor: "var(--theme-bg-secondary)",
-          borderRadius: "var(--theme-border-radius)",
-          border:
-            "var(--theme-border-width) var(--theme-border-style) var(--theme-border-color)",
-          boxShadow: "var(--theme-shadow-primary)",
-        }}
+      <motion.article
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.4, delay: index * 0.06 }}
+        className="group cursor-pointer rounded-2xl overflow-hidden bg-(--theme-bg-secondary) transition-shadow duration-300 hover:shadow-lg"
       >
-        {/* 1. Compact Thumbnail */}
-        <div className="relative w-24 h-24 sm:w-32 sm:h-32 shrink-0 overflow-hidden rounded-lg">
+        {/* Image */}
+        <div className="relative aspect-4/3 overflow-hidden">
           <Image
             src={project.imageUrl || "/Abisko-1.jpg"}
             alt={project.name}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
           />
-          {/* Subtle Overlay */}
-          <div className="absolute inset-0 bg-[var(--theme-accent)] mix-blend-multiply opacity-0 group-hover:opacity-10 transition-opacity" />
         </div>
 
-        {/* 2. Compact Info Stack */}
-        <div className="flex flex-col flex-grow min-w-0 pr-4">
-          <div className="flex justify-between items-start">
-            <span className="text-[9px] uppercase tracking-[0.2em] text-[var(--theme-accent)] font-bold truncate">
+        {/* Info */}
+        <div className="p-5">
+          <div className="flex items-center justify-between mb-2">
+            <span
+              className="text-[11px] tracking-wide"
+              style={{ color: "var(--theme-text-secondary)" }}
+            >
               {project.type}
             </span>
-            <span className="text-[10px] text-[var(--theme-text-secondary)] font-mono">
+            <span
+              className="text-[11px] tabular-nums"
+              style={{ color: "var(--theme-text-secondary)" }}
+            >
               {project.year}
             </span>
           </div>
-
           <h3
-            className="text-lg sm:text-xl font-bold leading-tight mb-2 truncate"
+            className="text-lg leading-snug tracking-tight"
             style={{
               color: "var(--theme-text-primary)",
+              fontWeight: "var(--theme-heading-weight)",
               fontFamily: "var(--theme-heading-font-family)",
-              textTransform: "var(--theme-heading-transform)" as any,
             }}
           >
             {project.name}
           </h3>
 
-          {/* 3. Horizontal Tech Strip */}
-          <div className="flex items-center gap-2 mt-auto">
-            <div className="flex -space-x-1.5 overflow-hidden">
-              {project.technology.slice(0, 4).map((tech: string, i: number) => (
-                <div
-                  key={i}
-                  className="w-5 h-5 rounded-md border bg-[var(--theme-bg-primary)] p-0.5 flex items-center justify-center"
-                  style={{ borderColor: "var(--theme-border-color)" }}
-                >
-                  <Image src={tech} alt="tech" width={12} height={12} />
-                </div>
-              ))}
-            </div>
-            {project.technology.length > 4 && (
-              <span className="text-[8px] text-[var(--theme-text-secondary)]">
-                +{project.technology.length - 4}
+          {/* Tech icons */}
+          <div className="flex items-center gap-2.5 mt-4 pt-4 border-t border-(--theme-border-color)">
+            {project.technology.slice(0, 5).map((tech: string, i: number) => (
+              <div
+                key={i}
+                className="w-4 h-4 opacity-35 group-hover:opacity-80 transition-opacity duration-300"
+              >
+                <Image src={tech} alt="tech" width={16} height={16} />
+              </div>
+            ))}
+            {project.technology.length > 5 && (
+              <span
+                className="text-[10px]"
+                style={{ color: "var(--theme-text-secondary)" }}
+              >
+                +{project.technology.length - 5}
               </span>
             )}
           </div>
         </div>
-
-        {/* 4. Minimalist Action Indicator */}
-        <div className="absolute bottom-3 right-4 opacity-0 group-hover:opacity-100 transition-all translate-y-1 group-hover:translate-y-0">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="var(--theme-accent)"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M5 12h14m-7-7 7 7-7 7" />
-          </svg>
-        </div>
-      </motion.div>
+      </motion.article>
     </Link>
   );
 }
